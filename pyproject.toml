@@ -7,6 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
     "cerebras-cloud-sdk>=1.50.1",
     "fastapi>=0.118.0",
+    "langchain>=0.3.27",
+    "langchain-cerebras>=0.5.0",
     "linkup-sdk>=0.6.0",
+    "notebook>=7.4.7",
     "python-dotenv>=1.1.1",
 ]

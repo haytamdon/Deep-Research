@@ -1,24 +1,31 @@
-import os
-from dotenv import load_dotenv
-from cerebras.cloud.sdk import Cerebras
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routers import messages
+from starlette.middleware.base import BaseHTTPMiddleware
 
-load_dotenv()
-
-client = Cerebras(
-  api_key=os.environ.get("CEREBRAS_API_KEY"),
+# Initialize the FastAPI app
+app = FastAPI(
+    title="API for deep search",
+    description="A backend API for deep search.",
+    version="1.0.0",
+    redirect_slashes=True
 )
 
-def main():
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user", 
-                "content": "Why is fast inference important?"
-            }
-        ],
-        model="llama-4-scout-17b-16e-instruct",
-    )
-    print(chat_completion)
+# Set up CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Add your domains
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
 
-if __name__ == "__main__":
-    main()
+
+# Include routers
+app.include_router(messages.router, prefix="/messages", tags=["Messages"])
+
+# Health check endpoint
+@app.get("/health", tags=["Health Check"])
+def health_check():
+    return {"status": "OK", "message": "foldrAI.com API is running."}
