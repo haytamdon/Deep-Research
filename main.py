@@ -26,6 +26,6 @@ app.add_middleware(
 app.include_router(messages.router, prefix="/messages", tags=["Messages"])
 
 # Health check endpoint
-@app.get("/health", tags=["Health Check"])
+@app.get("/", tags=["Health Check"])
 def health_check():
-    return {"status": "OK", "message": "foldrAI.com API is running."}
+    return {"status": "OK", "message": "API is running."}
