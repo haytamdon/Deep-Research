@@ -73,11 +73,11 @@ def query_decomposition_step(main_query: str,
 
     output_schema = format_output_schema(pydantic_schema)
 
-    # try:
-    output = call_cerebras_model(client, system_prompt, model_name, main_query, output_schema)
-    question_list = extract_output_dict(output)
-    # except:
-    #     question_list = generate_fallback_questions(main_query)
+    try:
+        output = call_cerebras_model(client, system_prompt, model_name, main_query, output_schema)
+        question_list = extract_output_dict(output)
+    except:
+        question_list = generate_fallback_questions(main_query)
 
     list_of_all_questions = format_query_decompositon_output(question_list, main_query)
 
