@@ -1,7 +1,18 @@
 from pydantic import BaseModel, Field
 from typing import List
+from datetime import date
+from linkup.types import LinkupSource
 
 class SearchRequest(BaseModel):
+    """Request for the search pipeline.
+
+    This artifact is created once at the beginning of the pipeline and
+    remains unchanged throughout execution.
+
+    Attributes:
+        query (str): Query to be searched.
+        max_sub_questions (int): Maximum number of sub-questions to be created.
+    """
     query: str
     max_sub_questions: int = 10
 
@@ -10,8 +21,12 @@ class QuerySubQuestions(BaseModel):
 
     This artifact is created once at the beginning of the pipeline and
     remains unchanged throughout execution.
-    """
 
+    Attributes:
+        main_question (str): main question.
+        sub_questions (List[str]): All the questions extracted from the main question.
+        justifications (List[str]): Links between the main query and the subquestions.
+    """    
     main_query: str = Field(
         ..., description="The main research question from the user"
     )
@@ -23,3 +38,57 @@ class QuerySubQuestions(BaseModel):
         default_factory= list,
         description="Links between the main query and the subquestions"
     )
+
+class QuerySearchMetadata(BaseModel):
+    """Metadata for the search query.
+
+    Attributes:
+        query (str): Query to be searched.
+        from_date (date): Date from when the search should start.
+        to_date (date): Date from when the search should end.
+    """
+    query: str = Field(
+        ..., description="Query to be searched"
+    )
+    from_date: date = Field(
+        default=None,
+        description="Date from when the search should start"
+    )
+    to_date: date = Field(
+        default=None,
+        description="Date from when the search should end"
+    )
+
+class SubQueriesSearchMetadata(BaseModel):
+    """Metadata for the search query.
+
+    Attributes:
+        main_query (QuerySearchMetadata): Metadata for the main query.
+        sub_query_meta (List[QuerySearchMetadata]): Metadata for the sub queries.
+    """
+    main_query: QuerySearchMetadata
+    sub_query_meta : List[QuerySearchMetadata]
+
+class QuerySearchResults(BaseModel):
+    """Results of the search query with the answer and the sources.
+
+    Attributes:
+        query (str): Researched Query.
+        answer (str): Answer to the query.
+        sources (List[LinkupSource]): Sources from where the results were extracted.
+        mode (str): Search mode.
+    """
+    query: str = Field(..., description="Researched Query")
+    answer: str = Field(..., description="Search Results in Natural Language")
+    sources: List[LinkupSource] = Field(description="Sources from where the results were extracted")
+    mode: str = Field(..., description="search mode")
+
+class QuerySubQueryResults(BaseModel):
+    """Results of the search query of the main query and the sub queries.
+
+    Attributes:
+        main_query (QuerySearchResults): Results of the main query.
+        sub_queries (List[QuerySearchResults]): Results of the sub queries.
+    """
+    main_query: QuerySearchResults
+    sub_queries: List[QuerySearchResults]
