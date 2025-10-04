@@ -92,3 +92,19 @@ class QuerySubQueryResults(BaseModel):
     """
     main_query: QuerySearchResults
     sub_queries: List[QuerySearchResults]
+
+class EnhancedQuerywithMetadata(BaseModel):
+    original_query: str = Field(..., description="The original query")
+    enhanced_query: str = Field(..., description="The enhanced query")
+    from_date: date = Field(
+        default=None, 
+        description="The date from when the search should start"
+    )
+    to_date: date = Field(
+        default=None, 
+        description="The date from when the search should end"
+    )
+
+class EnhancedQueryList(BaseModel):
+    main_query: EnhancedQuerywithMetadata
+    sub_queries: List[EnhancedQuerywithMetadata]

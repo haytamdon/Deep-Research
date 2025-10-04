@@ -7,24 +7,16 @@ research pipeline to ensure consistency and make prompt management easier.
 from pydantic import BaseModel, Field
 from typing import List
 
-DEFAULT_SEARCH_QUERY_SCHEMA = {
-  "type": "object",
-  "properties": {
-    "search_query": {"type": "string"},
-    "reasoning": {"type": "string"}
-  }
-}
-
-class SearchResult(BaseModel):
-    search_query: str = Field(description="")
-    reasoning: str = Field(description="")
+class EnhancedSearchQuery(BaseModel):
+    search_query: str = Field(...,description="The enhanced search query")
+    reasoning: str = Field(..., description="Reasoning as to how the search query was generated")
 
 class SubQuestion(BaseModel):
-    sub_question: str = Field(description="A sub-question derived from the main question")
-    reasoning: str = Field(description="The reasoning for why this sub-question is important")
+    sub_question: str = Field(..., description="A sub-question derived from the main question")
+    reasoning: str = Field(..., description="The reasoning for why this sub-question is important")
 
 class SubQuestionList(BaseModel):
-    questions: List[SubQuestion] = Field(description="List of sub-questions")
+    questions: List[SubQuestion] = Field(..., description="List of sub-questions")
 
 class SearchDates(BaseModel):
     from_date: str = Field(..., description="Search date start")
