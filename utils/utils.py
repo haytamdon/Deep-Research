@@ -12,6 +12,15 @@ def parallel_run_metadata(function, num_max_workers, params, client, model_name)
         results = [f.result() for f in futures]
     return results
 
+def parallel_run_search(function, num_max_workers, params, client, search_mode, output_type):
+    # with ThreadPoolExecutor(max_workers=num_max_workers) as executor:
+    #     futures = [executor.submit(function, client, query, search_mode, output_type, None, from_date, to_date) for query, from_date, to_date in params]
+    #     results = [f.result() for f in futures]
+    results = []
+    for query, from_date, to_date in params:
+        logger.info(f"Searching: {query} ...")
+        results.append(function(client, query, search_mode, output_type, None, from_date, to_date))
+    return results
 
 
 def format_all_questions_output(parallel_output: List[QuerySearchMetadata]) -> SubQueriesSearchMetadata:

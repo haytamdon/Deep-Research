@@ -1,8 +1,18 @@
 from pydantic import BaseModel, Field
 from typing import List
 from datetime import date
+from linkup.types import LinkupSource
 
 class SearchRequest(BaseModel):
+    """Request for the search pipeline.
+
+    This artifact is created once at the beginning of the pipeline and
+    remains unchanged throughout execution.
+
+    Attributes:
+        query (str): Query to be searched.
+        max_sub_questions (int): Maximum number of sub-questions to be created.
+    """
     query: str
     max_sub_questions: int = 10
 
@@ -30,6 +40,13 @@ class QuerySubQuestions(BaseModel):
     )
 
 class QuerySearchMetadata(BaseModel):
+    """Metadata for the search query.
+
+    Attributes:
+        query (str): Query to be searched.
+        from_date (date): Date from when the search should start.
+        to_date (date): Date from when the search should end.
+    """
     query: str = Field(
         ..., description="Query to be searched"
     )
@@ -43,5 +60,35 @@ class QuerySearchMetadata(BaseModel):
     )
 
 class SubQueriesSearchMetadata(BaseModel):
+    """Metadata for the search query.
+
+    Attributes:
+        main_query (QuerySearchMetadata): Metadata for the main query.
+        sub_query_meta (List[QuerySearchMetadata]): Metadata for the sub queries.
+    """
     main_query: QuerySearchMetadata
     sub_query_meta : List[QuerySearchMetadata]
+
+class QuerySearchResults(BaseModel):
+    """Results of the search query with the answer and the sources.
+
+    Attributes:
+        query (str): Researched Query.
+        answer (str): Answer to the query.
+        sources (List[LinkupSource]): Sources from where the results were extracted.
+        mode (str): Search mode.
+    """
+    query: str = Field(..., description="Researched Query")
+    answer: str = Field(..., description="Search Results in Natural Language")
+    sources: List[LinkupSource] = Field(description="Sources from where the results were extracted")
+    mode: str = Field(..., description="search mode")
+
+class QuerySubQueryResults(BaseModel):
+    """Results of the search query of the main query and the sub queries.
+
+    Attributes:
+        main_query (QuerySearchResults): Results of the main query.
+        sub_queries (List[QuerySearchResults]): Results of the sub queries.
+    """
+    main_query: QuerySearchResults
+    sub_queries: List[QuerySearchResults]
