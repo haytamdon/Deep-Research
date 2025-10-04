@@ -41,3 +41,7 @@ class QuerySearchMetadata(BaseModel):
         default=None,
         description="Date from when the search should end"
     )
+
+class SubQueriesSearchMetadata(BaseModel):
+    main_query: QuerySearchMetadata
+    sub_query_meta : List[QuerySearchMetadata]
