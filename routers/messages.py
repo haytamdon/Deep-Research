@@ -29,13 +29,16 @@ def search_pipeline(request: SearchRequest,
                                            num_sub_questions= max_sub_questions,
                                            client= cerebras_client)
     questions = [query] + sub_queries.sub_questions
+    logger.info(f"Starting the metadata extraction for {len(questions)} questions")
     results = parallel_run_metadata(function= metadata_extraction_step, 
                                     num_max_workers= max_sub_questions, 
                                     params= questions, 
                                     client= cerebras_client, 
                                     model_name= model_name)
+    logger.info("Formatting the results for the main query and the sub queries")
     formatted_result = format_all_questions_output(results)
-
+    logger.info("Starting the question search for the main query and the sub queries")
     all_search_results = parallelize_question_search(all_questions=formatted_result,
                                 client= linkup_client)
+    logger.info("Returning the results")
     return all_search_results

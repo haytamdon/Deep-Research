@@ -3,6 +3,9 @@ from utils.utils import parallel_run_search
 from utils.search_utils import search_linkup, format_outputs
 from typing import Literal
 from linkup import LinkupClient
+import logging
+
+logger = logging.getLogger(__name__)
 
 def parallelize_question_search(all_questions: SubQueriesSearchMetadata,
                                 client: LinkupClient,
@@ -17,6 +20,7 @@ def parallelize_question_search(all_questions: SubQueriesSearchMetadata,
                                                sub_question.from_date, 
                                                sub_question.to_date) for sub_question in sub_questions]
     num_max_workers = len(all_params)
+    logger.info(f"Starting the question search for {num_max_workers} questions")
     outputs = parallel_run_search(function=search_linkup, 
                         num_max_workers= num_max_workers, 
                         params = all_params, 
