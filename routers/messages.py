@@ -1,8 +1,9 @@
 from fastapi import APIRouter
 from dotenv import load_dotenv
 from steps.query_decomposition import query_decomposition_step
+from steps.extract_metadata import metadata_extraction_step
 from utils.llm_utils import get_cerebras_client
-from utils.pydantic_models import QuerySubQuestions, SearchRequest
+from utils.pydantic_models import QuerySubQuestions, SearchRequest, QuerySearchMetadata
 import logging
 import os
 
@@ -13,7 +14,7 @@ router = APIRouter()
 
 cerebras_client = get_cerebras_client(os.environ.get("CEREBRAS_API_KEY"))
 
-@router.post("/", response_model=QuerySubQuestions)
+@router.post("/", response_model=QuerySearchMetadata)
 def search_pipeline(request: SearchRequest):
     logger.info("test")
     query = request.query
@@ -22,4 +23,9 @@ def search_pipeline(request: SearchRequest):
                                            model_name="llama-4-scout-17b-16e-instruct",
                                            num_sub_questions= max_sub_questions,
                                            client= cerebras_client)
-    return sub_queries
+    questions = sub_queries.sub_questions
+    question_meta = metadata_extraction_step(query= questions[0],
+                             client= cerebras_client,
+                             model_name="llama-4-scout-17b-16e-instruct"
+                             )
+    return question_meta

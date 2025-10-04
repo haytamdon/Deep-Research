@@ -34,10 +34,10 @@ class QuerySearchMetadata(BaseModel):
         ..., description="Query to be searched"
     )
     from_date: date = Field(
-        default_factory= date,
+        default=None,
         description="Date from when the search should start"
     )
     to_date: date = Field(
-        default_factory= date,
+        default=None,
         description="Date from when the search should end"
     )
