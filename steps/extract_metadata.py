@@ -42,8 +42,8 @@ def metadata_extraction_step(query: str,
                              current_date: date = date.today())-> QuerySearchMetadata:
     
     logger.info(f"Decomposing research query: {query}")
-
-    system_prompt = METADATA_EXTRACTION_PROMPT + f"\nFor more details here is the current date {current_date}."
+    prompt_subfix = f"\nFor more details here is the current date {current_date}."
+    system_prompt = METADATA_EXTRACTION_PROMPT + prompt_subfix
 
     pydantic_schema = SearchDates.model_json_schema()
 

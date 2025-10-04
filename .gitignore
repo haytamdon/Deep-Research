@@ -13,7 +13,7 @@ wheels/
 *.log
 *.log.*
 *.log.*.*
-
+app.log
 # Environment files
 .env
 .env.*
