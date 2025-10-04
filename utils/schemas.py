@@ -25,3 +25,7 @@ class SubQuestion(BaseModel):
 
 class SubQuestionList(BaseModel):
     questions: List[SubQuestion] = Field(description="List of sub-questions")
+
+class SearchDates(BaseModel):
+    from_date: str = Field(..., description="Search date start")
+    to_date: str = Field(..., description="Search date end")

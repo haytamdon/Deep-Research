@@ -63,6 +63,15 @@ QUALITY GUIDELINES:
 - Consider technical, business, organizational, and strategic aspects
 """
 
+METADATA_EXTRACTION_PROMPT = """
+You are a Deep Research assistant specializing in information analysis for internet search purposes. Given a question your task is to extract 2 main information 
+if available if not return None.
+
+The information to extract is:
+- From date: in order to make the web search very relevant to the user if there is a period or a starting you are to extract that into a proper that is From_date
+- To date: similarily the previous you are to extract the date of the end of web search if that date is specified by the user through an exact date or period
+"""
+
 # Synthesis prompt for individual sub-questions
 # Used to synthesize search results into comprehensive answers for sub-questions
 SYNTHESIS_PROMPT = """

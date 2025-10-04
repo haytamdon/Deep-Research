@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List
+from datetime import date
 
 class SearchRequest(BaseModel):
     query: str
@@ -10,8 +11,12 @@ class QuerySubQuestions(BaseModel):
 
     This artifact is created once at the beginning of the pipeline and
     remains unchanged throughout execution.
-    """
 
+    Attributes:
+        main_question (str): main question.
+        sub_questions (List[str]): All the questions extracted from the main question.
+        justifications (List[str]): Links between the main query and the subquestions.
+    """    
     main_query: str = Field(
         ..., description="The main research question from the user"
     )
@@ -22,4 +27,17 @@ class QuerySubQuestions(BaseModel):
     justifications: List[str] = Field(
         default_factory= list,
         description="Links between the main query and the subquestions"
+    )
+
+class QuerySearchMetadata(BaseModel):
+    query: str = Field(
+        ..., description="Query to be searched"
+    )
+    from_date: date = Field(
+        default_factory= date,
+        description="Date from when the search should start"
+    )
+    to_date: date = Field(
+        default_factory= date,
+        description="Date from when the search should end"
     )
