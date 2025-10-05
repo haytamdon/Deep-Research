@@ -125,4 +125,4 @@ class QueryReport(BaseModel):
 class ReportNextSteps(BaseModel):
     main_query: str = Field(..., description="original query")
     report: str = Field(..., description="generated report")
-    next_questions: str = Field(..., description="next queries")
+    next_questions: List[str] = Field(..., description="next queries")
