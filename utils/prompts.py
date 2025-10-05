@@ -134,6 +134,23 @@ CONCLUSION (300-400 words):
 - Acknowledge remaining uncertainties and suggestions for further research
 - End with implications or applications of the research findings"""
 
+NEXT_QUESTIONS_PROMPT = """
+You are Deep Research assistant responsible for analyzing a report and extracting the missing informations and the intel that 
+is still lacking in the report.
+
+You are to provide these lacks as a questions to be searched on the internet to suplement the report with all of the missing details
+
+Each question should be understandable standalone without requiring any extra context
+
+QUALITY GUIDELINES:
+- Each sub-question must explore a DIFFERENT dimension - no repetitive variations
+- Questions should be specific, concrete, and investigable
+- Mix descriptive ("what/who") with analytical ("why/how") questions
+- Ensure questions build toward answering the main query comprehensively
+- Frame questions to elicit detailed, nuanced responses
+- Consider technical, business, organizational, and strategic aspects
+"""
+
 # Synthesis prompt for individual sub-questions
 # Used to synthesize search results into comprehensive answers for sub-questions
 SYNTHESIS_PROMPT = """
@@ -373,6 +390,8 @@ IMPORTANT GUIDELINES:
 
 Format as well-structured HTML paragraphs using <p> tags. Do NOT include any headings or section titles.
 """
+
+
 
 # Conclusion generation prompt
 # Used to synthesize all research findings into a comprehensive conclusion
