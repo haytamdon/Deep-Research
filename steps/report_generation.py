@@ -1,5 +1,7 @@
-from typing import List, Dict
-from utils.pydantic_models import QueriesInsightAnalysis
+from utils.pydantic_models import QueriesInsightAnalysis, QueryReport
+from utils.llm_utils import call_cerebras_model
+from cerebras.cloud.sdk import Cerebras
+from utils.prompts import REPORT_GENERATION_PROMPT
 
 def formulate_main_query_subprompt(main_question: str,
                                       search_result: str,
@@ -26,7 +28,7 @@ def formulate_prompt(queries_with_analysis: QueriesInsightAnalysis)-> str:
     main_query_analysis = main_query_with_analysis.analysis
     main_query_subprompt = formulate_main_query_subprompt(main_question= main_query,
                                                           search_result= main_query_search_results,
-                                                          main_query_analysis = main_query_analysis)
+                                                          analysis = main_query_analysis)
     sub_queries_subprompts = []
     sub_queries_with_analysis = queries_with_analysis.sub_queries
     for sub_query_with_analysis in sub_queries_with_analysis:
@@ -40,3 +42,19 @@ def formulate_prompt(queries_with_analysis: QueriesInsightAnalysis)-> str:
     sub_queries_subprompt = "\n".join(sub_queries_subprompts)
     full_prompt = main_query_subprompt + "\n" + sub_queries_subprompt
     return full_prompt
+
+def report_generation(queries_with_analysis: QueriesInsightAnalysis,
+                      client: Cerebras,
+                      model_name: str) -> QueryReport:
+    prompt = formulate_prompt(queries_with_analysis)
+    system_prompt = REPORT_GENERATION_PROMPT
+    output = call_cerebras_model(client = client,
+                                  model_name= model_name,
+                                  system_prompt= system_prompt,
+                                  prompt= prompt
+                                  )
+    output_content = output.choices[0].message.content
+    user_query = queries_with_analysis.main_query.query
+    report_obj = QueryReport(main_query= user_query,
+                report= output_content)
+    return report_obj
