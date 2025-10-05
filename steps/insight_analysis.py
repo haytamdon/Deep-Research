@@ -16,7 +16,7 @@ def formulate_insight_analysis_prompt(main_question: str,
 
     return prompt
 
-def format_insights(parallelized_insight_out: List[QueryAnalysis]) -> QueriesInsightAnalysis:
+def format_insights(parallelized_insight_out: List[QueryAnalysis])->QueriesInsightAnalysis:
     main_question_insights = parallelized_insight_out[0]
     sub_question_insights = parallelized_insight_out[1:]
     return QueriesInsightAnalysis(main_query= main_question_insights, sub_queries= sub_question_insights)
