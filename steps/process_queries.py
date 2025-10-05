@@ -19,10 +19,6 @@ def fallback_search_query_outputs(query) -> EnhancedSearchQuery:
     return EnhancedSearchQuery(search_query=query, reasoning="No search query was generated")
 
 def add_metadata_to_query(query: str, search_query: str, from_date: date, to_date: date) -> EnhancedQuerywithMetadata:
-    logger.info(str(type(query)))
-    logger.info(str(type(search_query)))
-    logger.info(str(type(from_date)))
-    logger.info(str(type(to_date)))
     kwargs = {
         "original_query" : query,
         "enhanced_query" : search_query,
