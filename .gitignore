@@ -14,7 +14,12 @@ wheels/
 *.log.*
 *.log.*.*
 app.log
+
+
 # Environment files
 .env
 .env.*
 !env.example
+
+# Notebooks
+.ipynb

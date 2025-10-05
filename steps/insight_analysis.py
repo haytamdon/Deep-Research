@@ -1,4 +1,5 @@
-from sambanova import SambaNova
+# from sambanova import SambaNova
+from cerebras.cloud.sdk import Cerebras
 from utils.prompts import INSIGHT_ANALYSIS_PROMPT
 from utils.llm_utils import call_cerebras_model, process_reasoning_output
 from utils.pydantic_models import QueryAnalysis, QueriesInsightAnalysis
@@ -16,7 +17,7 @@ def formulate_insight_analysis_prompt(main_question: str,
 
     return prompt
 
-def format_insights(parallelized_insight_out: List[QueryAnalysis]) -> QueriesInsightAnalysis:
+def format_insights(parallelized_insight_out: List[QueryAnalysis])->QueriesInsightAnalysis:
     main_question_insights = parallelized_insight_out[0]
     sub_question_insights = parallelized_insight_out[1:]
     return QueriesInsightAnalysis(main_query= main_question_insights, sub_queries= sub_question_insights)
@@ -24,7 +25,7 @@ def format_insights(parallelized_insight_out: List[QueryAnalysis]) -> QueriesIns
 def insight_analysis(main_question: str, 
                      sub_question: str,
                      search_result: str,
-                     client: SambaNova,
+                     client: Cerebras,
                      model_name: str
                      ) -> QueryAnalysis:
     

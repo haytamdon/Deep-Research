@@ -5,9 +5,10 @@ from steps.extract_metadata import metadata_extraction_step
 from steps.sub_question_search import parallelize_question_search
 from steps.process_queries import process_queries_step, map_queries_to_enhanced_queries
 from steps.insight_analysis import insight_analysis, format_insights
+from steps.report_generation import report_generation
 from utils.llm_utils import get_cerebras_client, get_sambanova_client
 from utils.search_utils import get_linkup_client
-from utils.pydantic_models import SearchRequest, QueriesInsightAnalysis
+from utils.pydantic_models import SearchRequest, QueryReport
 from utils.utils import (parallel_run_metadata, 
                          format_all_questions_output, 
                          parallel_process_queries, 
@@ -27,7 +28,7 @@ linkup_client = get_linkup_client(os.environ.get("LINKUP_API_KEY"))
 
 sambanova_client = get_sambanova_client(os.environ.get("SAMBANOVA_API_KEY"))
 
-@router.post("/", response_model= QueriesInsightAnalysis)
+@router.post("/", response_model= QueryReport)
 def search_pipeline(request: SearchRequest,
                     model_name: str = "llama-4-scout-17b-16e-instruct"):
     query = request.query
@@ -64,4 +65,8 @@ def search_pipeline(request: SearchRequest,
                             main_question= query,
                             params= search_analysis_params)
     all_queries_with_analysis = format_insights(analysis)
-    return all_queries_with_analysis
+    logger.info("Generating Report")
+    report = report_generation(queries_with_analysis= all_queries_with_analysis,
+                      client= cerebras_client,
+                      model_name= "qwen-3-235b-a22b-instruct-2507")
+    return report
