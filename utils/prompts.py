@@ -136,7 +136,7 @@ CONCLUSION (300-400 words):
 
 NEXT_QUESTIONS_PROMPT = """
 You are Deep Research assistant responsible for analyzing a report and extracting the missing informations and the intel that 
-is still lacking in the report.
+is still lacking in the report that needs to be searched and explored.
 
 You are to provide these lacks as a questions to be searched on the internet to suplement the report with all of the missing details
 
