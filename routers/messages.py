@@ -64,4 +64,6 @@ def search_pipeline(request: SearchRequest,
                             main_question= query,
                             params= search_analysis_params)
     all_queries_with_analysis = format_insights(analysis)
+    logger.info("Generating Report")
+    
     return all_queries_with_analysis
