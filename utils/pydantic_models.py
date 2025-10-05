@@ -15,6 +15,7 @@ class SearchRequest(BaseModel):
     """
     query: str
     max_sub_questions: int = 10
+    max_iterations: int = 1
 
 class QuerySubQuestions(BaseModel):
     """Immutable context containing the research query and its decomposition.
