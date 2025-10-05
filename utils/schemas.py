@@ -21,3 +21,10 @@ class SubQuestionList(BaseModel):
 class SearchDates(BaseModel):
     from_date: str = Field(..., description="Search date start")
     to_date: str = Field(..., description="Search date end")
+
+class NextQuestion(BaseModel):
+    question: str = Field(..., description="Question to be explored to supplement the report")
+    reasoning: str = Field(..., description="The reasoning for why this question should be explored")
+
+class NextQuestionList(BaseModel):
+    questions: List[NextQuestion] = Field(..., description="List of next questions")
