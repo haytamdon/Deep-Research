@@ -357,6 +357,7 @@ dependencies = [
     { name = "linkup-sdk" },
     { name = "notebook" },
     { name = "python-dotenv" },
+    { name = "sambanova" },
     { name = "uvicorn" },
 ]
 
@@ -369,6 +370,7 @@ requires-dist = [
     { name = "linkup-sdk", specifier = ">=0.6.0" },
     { name = "notebook", specifier = ">=7.4.7" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
+    { name = "sambanova", specifier = ">=1.1.3" },
     { name = "uvicorn", specifier = ">=0.37.0" },
 ]
 
@@ -1789,6 +1791,23 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/dd/10/6b283707780a81919f71625351182b4f98932ac89a09023cb61865136244/rpds_py-0.27.1-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:f39f58a27cc6e59f432b568ed8429c7e1641324fbe38131de852cd77b2d534b0", size = 555813, upload_time = "2025-08-27T12:15:00.334Z" },
     { url = "https://files.pythonhosted.org/packages/04/2e/30b5ea18c01379da6272a92825dd7e53dc9d15c88a19e97932d35d430ef7/rpds_py-0.27.1-cp314-cp314t-win32.whl", hash = "sha256:d5fa0ee122dc09e23607a28e6d7b150da16c662e66409bbe85230e4c85bb528a", size = 217385, upload_time = "2025-08-27T12:15:01.937Z" },
     { url = "https://files.pythonhosted.org/packages/32/7d/97119da51cb1dd3f2f3c0805f155a3aa4a95fa44fe7d78ae15e69edf4f34/rpds_py-0.27.1-cp314-cp314t-win_amd64.whl", hash = "sha256:6567d2bb951e21232c2f660c24cf3470bb96de56cdcb3f071a83feeaff8a2772", size = 230097, upload_time = "2025-08-27T12:15:03.961Z" },
+]
+
+[[package]]
+name = "sambanova"
+version = "1.1.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "distro" },
+    { name = "httpx" },
+    { name = "pydantic" },
+    { name = "sniffio" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/de/6e/376c84417ea106e7b37bd71994498d528bed3c805704aeabd7ec78b895ae/sambanova-1.1.3.tar.gz", hash = "sha256:fdb0765fcdbb2c46d94e51d7e6e00db3e39dca04d3e38802f757897011d2e624", size = 120553, upload_time = "2025-10-03T00:55:34.363Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/50/72c1e2020b5c40fe38e7549a405ead4745780598584494406e0d53fe9c6e/sambanova-1.1.3-py3-none-any.whl", hash = "sha256:bfa1be715466e5318e9136d2a3375742020769fd6aa265b1783bd151ba9677ab", size = 111840, upload_time = "2025-10-03T00:55:32.775Z" },
 ]
 
 [[package]]

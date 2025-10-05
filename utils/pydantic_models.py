@@ -69,6 +69,22 @@ class SubQueriesSearchMetadata(BaseModel):
     main_query: QuerySearchMetadata
     sub_query_meta : List[QuerySearchMetadata]
 
+class EnhancedQuerywithMetadata(BaseModel):
+    original_query: str = Field(..., description="The original query")
+    enhanced_query: str = Field(..., description="The enhanced query")
+    from_date: date = Field(
+        default=None, 
+        description="The date from when the search should start"
+    )
+    to_date: date = Field(
+        default=None, 
+        description="The date from when the search should end"
+    )
+
+class EnhancedQueryList(BaseModel):
+    main_query: EnhancedQuerywithMetadata
+    sub_queries: List[EnhancedQuerywithMetadata]
+
 class QuerySearchResults(BaseModel):
     """Results of the search query with the answer and the sources.
 
@@ -93,18 +109,11 @@ class QuerySubQueryResults(BaseModel):
     main_query: QuerySearchResults
     sub_queries: List[QuerySearchResults]
 
-class EnhancedQuerywithMetadata(BaseModel):
-    original_query: str = Field(..., description="The original query")
-    enhanced_query: str = Field(..., description="The enhanced query")
-    from_date: date = Field(
-        default=None, 
-        description="The date from when the search should start"
-    )
-    to_date: date = Field(
-        default=None, 
-        description="The date from when the search should end"
-    )
+class QueryAnalysis(BaseModel):
+    query: str = Field(..., description="researched query")
+    search_result: str = Field(..., description="Search Results in Natural Language")
+    analysis: str = Field(..., description="Search result analysis")
 
-class EnhancedQueryList(BaseModel):
-    main_query: EnhancedQuerywithMetadata
-    sub_queries: List[EnhancedQuerywithMetadata]
+class QueriesInsightAnalysis(BaseModel):
+    main_query: QueryAnalysis
+    sub_queries: List[QueryAnalysis]

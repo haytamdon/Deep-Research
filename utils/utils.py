@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
-from utils.pydantic_models import SubQueriesSearchMetadata, QuerySearchMetadata
+from utils.pydantic_models import SubQueriesSearchMetadata, QuerySearchMetadata, QuerySubQueryResults
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 import logging
 
 logger = logging.getLogger(__name__)
@@ -37,6 +37,29 @@ def parallel_process_queries(function, num_max_workers, params, client, model_na
         results = [f.result() for f in futures]
     return results
 
+def parallel_analyze_output(function, num_max_workers, params, main_question, client, model_name):
+    """Parallel process the search output analysis function.
+
+    Args:
+        function: The function to be run.
+        num_max_workers: The number of workers to be used.
+        params: The parameters to be used.
+        client: The client to be used.
+        model_name: The model name to be used.
+    """
+    with ThreadPoolExecutor(max_workers=num_max_workers) as executor:
+        futures = [executor.submit(function, main_question, sub_question, search_result, client, model_name) for sub_question, search_result in params]
+        results = [f.result() for f in futures]
+    return results
+
+def format_search_outputs(search_output: QuerySubQueryResults) -> List[Tuple[str, str]]:
+    search_analysis_params = []
+    first_query = search_output.main_query.query
+    first_search_result = search_output.main_query.answer
+    search_analysis_params.append((first_query, first_search_result))
+    for sub_query in search_output.sub_queries:
+        search_analysis_params.append((sub_query.query, sub_query.answer))
+    return search_analysis_params
 
 def sequential_run_search(function, params, client, search_mode, output_type):
     """Sequentially run the searching linkup api call.

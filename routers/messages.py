@@ -4,10 +4,15 @@ from steps.query_decomposition import query_decomposition_step
 from steps.extract_metadata import metadata_extraction_step
 from steps.sub_question_search import parallelize_question_search
 from steps.process_queries import process_queries_step, map_queries_to_enhanced_queries
-from utils.llm_utils import get_cerebras_client
+from steps.insight_analysis import insight_analysis, format_insights
+from utils.llm_utils import get_cerebras_client, get_sambanova_client
 from utils.search_utils import get_linkup_client
-from utils.pydantic_models import SearchRequest, QuerySubQueryResults
-from utils.utils import parallel_run_metadata, format_all_questions_output, parallel_process_queries
+from utils.pydantic_models import SearchRequest, QueriesInsightAnalysis
+from utils.utils import (parallel_run_metadata, 
+                         format_all_questions_output, 
+                         parallel_process_queries, 
+                         parallel_analyze_output,
+                         format_search_outputs)
 import logging
 import os
 
@@ -20,7 +25,9 @@ cerebras_client = get_cerebras_client(os.environ.get("CEREBRAS_API_KEY"))
 
 linkup_client = get_linkup_client(os.environ.get("LINKUP_API_KEY"))
 
-@router.post("/", response_model= QuerySubQueryResults)
+sambanova_client = get_sambanova_client(os.environ.get("SAMBANOVA_API_KEY"))
+
+@router.post("/", response_model= QueriesInsightAnalysis)
 def search_pipeline(request: SearchRequest,
                     model_name: str = "llama-4-scout-17b-16e-instruct"):
     query = request.query
@@ -48,6 +55,13 @@ def search_pipeline(request: SearchRequest,
     logger.info("Starting the question search for the main query and the sub queries")
     all_search_results = parallelize_question_search(all_questions=search_queries_with_metadata,
                                 client= linkup_client)
-    logger.info("Returning the results")
-    return all_search_results
-    # return search_queries_with_metadata
+    logger.info("Analyzing all of the outputs of the search")
+    search_analysis_params = format_search_outputs(all_search_results)
+    analysis = parallel_analyze_output(function= insight_analysis, 
+                            num_max_workers= max_sub_questions,
+                            client= sambanova_client,
+                            model_name="DeepSeek-R1-0528",
+                            main_question= query,
+                            params= search_analysis_params)
+    all_queries_with_analysis = format_insights(analysis)
+    return all_queries_with_analysis
