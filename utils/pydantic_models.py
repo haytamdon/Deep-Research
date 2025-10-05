@@ -121,3 +121,8 @@ class QueriesInsightAnalysis(BaseModel):
 class QueryReport(BaseModel):
     main_query: str = Field(..., description="query to research")
     report: str = Field(..., description="generated report")
+
+class ReportNextSteps(BaseModel):
+    main_query: str = Field(..., description="original query")
+    report: str = Field(..., description="generated report")
+    next_questions: List[str] = Field(..., description="next queries")
