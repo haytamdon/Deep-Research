@@ -30,7 +30,7 @@ def get_sambanova_client(api_key: SecretStr = SecretStr(os.environ.get("SAMBANOV
     )
     return client
 
-def call_cerebras_model(client, system_prompt, model_name, prompt, response_schema):
+def call_cerebras_model(client, system_prompt, model_name, prompt, response_schema = None):
     """Call the Cerebras model.
 
     Args:

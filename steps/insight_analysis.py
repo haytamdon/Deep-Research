@@ -1,6 +1,6 @@
 from sambanova import SambaNova
 from utils.prompts import INSIGHT_ANALYSIS_PROMPT
-from utils.llm_utils import call_sambanova_model, process_reasoning_output
+from utils.llm_utils import call_cerebras_model, process_reasoning_output
 from utils.pydantic_models import QueryAnalysis, QueriesInsightAnalysis
 import logging
 from typing import List
@@ -31,12 +31,13 @@ def insight_analysis(main_question: str,
     logger.info(f"Analyzing sub question: {sub_question} outputs")
     system_prompt = INSIGHT_ANALYSIS_PROMPT
     prompt = formulate_insight_analysis_prompt(main_question, sub_question, search_result)
-    output = call_sambanova_model(client = client,
+    output = call_cerebras_model(client = client,
                                   model_name= model_name,
                                   system_prompt= system_prompt,
                                   prompt= prompt
                                   )
-    processed_output = process_reasoning_output(output)
+    output_content = output.choices[0].message.content
+    processed_output = process_reasoning_output(output_content)
     query_analysis_obj = QueryAnalysis(query= sub_question,
                                        search_result= search_result,
                                        analysis= processed_output)

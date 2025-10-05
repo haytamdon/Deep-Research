@@ -59,8 +59,8 @@ def search_pipeline(request: SearchRequest,
     search_analysis_params = format_search_outputs(all_search_results)
     analysis = parallel_analyze_output(function= insight_analysis, 
                             num_max_workers= max_sub_questions,
-                            client= sambanova_client,
-                            model_name="DeepSeek-R1-0528",
+                            client= cerebras_client,
+                            model_name="qwen-3-235b-a22b-thinking-2507",
                             main_question= query,
                             params= search_analysis_params)
     all_queries_with_analysis = format_insights(analysis)
