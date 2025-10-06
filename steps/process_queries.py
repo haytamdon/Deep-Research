@@ -1,6 +1,6 @@
 from utils.prompts import DEFAULT_SEARCH_QUERY_PROMPT
 from utils.schemas import EnhancedSearchQuery
-from utils.pydantic_models import EnhancedQuerywithMetadata, SubQueriesSearchMetadata, EnhancedQueryList
+from utils.pydantic_models import EnhancedQuerywithMetadata, SubQueriesSearchMetadata, EnhancedQueryList, QuerySearchMetadata
 from utils.llm_utils import format_output_schema, call_cerebras_model
 from cerebras.cloud.sdk import Cerebras
 import logging
@@ -27,6 +27,16 @@ def add_metadata_to_query(query: str, search_query: str, from_date: date, to_dat
     }
     kwargs = {k: v for k, v in kwargs.items() if v is not None}
     return EnhancedQuerywithMetadata(**kwargs)
+
+def map_query_to_enhanced_query(query_with_metadata: QuerySearchMetadata,
+                                enhanced_query: EnhancedSearchQuery)-> EnhancedQuerywithMetadata:
+    main_query = query_with_metadata.query
+    enhanced_main_query = enhanced_query.search_query
+    from_date = query_with_metadata.from_date
+    to_date = query_with_metadata.to_date
+    search_query_with_metadata = add_metadata_to_query(main_query, enhanced_main_query, from_date, to_date)
+    return search_query_with_metadata
+    
 
 def map_queries_to_enhanced_queries(queries_with_metadata: SubQueriesSearchMetadata, 
                                     enhanced_queries: List[EnhancedSearchQuery]) -> EnhancedQueryList:

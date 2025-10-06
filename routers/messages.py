@@ -3,13 +3,14 @@ from dotenv import load_dotenv
 from steps.query_decomposition import query_decomposition_step
 from steps.extract_metadata import metadata_extraction_step
 from steps.sub_question_search import parallelize_question_search
-from steps.process_queries import process_queries_step, map_queries_to_enhanced_queries
+from steps.process_queries import process_queries_step, map_queries_to_enhanced_queries, map_query_to_enhanced_query
 from steps.insight_analysis import insight_analysis, format_insights
 from steps.report_generation import report_generation
 from steps.extract_next_questions import next_query_creation
+from steps.explore_next_question import simplified_pipeline
 from utils.llm_utils import get_cerebras_client, get_sambanova_client
 from utils.search_utils import get_linkup_client
-from utils.pydantic_models import SearchRequest, ReportNextSteps
+from utils.pydantic_models import SearchRequest, QueryReport
 from utils.utils import (parallel_run_metadata, 
                          format_all_questions_output, 
                          parallel_process_queries, 
@@ -29,11 +30,12 @@ linkup_client = get_linkup_client(os.environ.get("LINKUP_API_KEY"))
 
 sambanova_client = get_sambanova_client(os.environ.get("SAMBANOVA_API_KEY"))
 
-@router.post("/", response_model= ReportNextSteps)
+@router.post("/", response_model= QueryReport)
 def search_pipeline(request: SearchRequest,
                     model_name: str = "llama-4-scout-17b-16e-instruct"):
     query = request.query
     max_sub_questions = request.max_sub_questions
+    num_iterations = request.max_iterations
     sub_queries = query_decomposition_step(main_query= query,
                                            model_name= model_name,
                                            num_sub_questions= max_sub_questions,
@@ -70,9 +72,21 @@ def search_pipeline(request: SearchRequest,
     report = report_generation(queries_with_analysis= all_queries_with_analysis,
                       client= cerebras_client,
                       model_name= "qwen-3-235b-a22b-instruct-2507")
-    logger.info("Generating next step")
-    next_queries = next_query_creation(report_obj= report,
-                        num_next_questions= 5,
-                        model_name=model_name,
-                        client= cerebras_client)
-    return next_queries
+    if num_iterations<=1:
+        return report
+    else:
+        logger.info("Generating next step")
+        next_queries = next_query_creation(report_obj= report,
+                            num_next_questions= 5,
+                            model_name=model_name,
+                            client= cerebras_client)
+        next_questions = next_queries.next_questions
+        for qst in next_questions:
+            logger.info(f"Handling next question {qst}")
+            report = simplified_pipeline(query= qst,
+                                         original_question= query,
+                                         model_name= model_name,
+                                         cerebras_client= cerebras_client,
+                                         linkup_client= linkup_client,
+                                         report= report)
+        return report
