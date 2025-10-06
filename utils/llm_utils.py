@@ -6,6 +6,7 @@ import os
 from pydantic import SecretStr
 from typing import Dict
 from sambanova import SambaNova
+from cerebras.cloud.sdk.types.chat.chat_completion import ChatCompletion
 
 
 def get_cerebras_client(api_key: SecretStr = SecretStr(os.environ.get("CEREBRAS_API_KEY"))):
@@ -24,13 +25,26 @@ def get_cerebras_client(api_key: SecretStr = SecretStr(os.environ.get("CEREBRAS_
 
 def get_sambanova_client(api_key: SecretStr = SecretStr(os.environ.get("SAMBANOVA_API_KEY")),
                          api_endpoint: str = "https://api.sambanova.ai/v1") -> SambaNova:
+    """Get the Sambanova client.
+
+    Args:
+        api_key (SecretStr, optional): Sambanova API key.
+        api_endpoint (str, optional): Sambanova's base URL.
+
+    Returns:
+        SambaNova: SambaNova Client
+    """
     client = SambaNova(
         api_key= api_key,
         base_url= api_endpoint,
     )
     return client
 
-def call_cerebras_model(client, system_prompt, model_name, prompt, response_schema = None):
+def call_cerebras_model(client: Cerebras, 
+                        system_prompt: str, 
+                        model_name: str, 
+                        prompt: str, 
+                        response_schema: Dict[str, any] = None) -> ChatCompletion:
     """Call the Cerebras model.
 
     Args:
@@ -59,6 +73,19 @@ def call_sambanova_model(client: SambaNova,
                          prompt: str,
                          temperature: float = 0.1,
                          top_p: float = 0.1) -> str:
+    """Call a sambanova model
+
+    Args:
+        client (SambaNova): SambaNova Client
+        model_name (str): Name of the model
+        system_prompt (str): system prompt
+        prompt (str): prompt to answer
+        temperature (float, optional): model temperature. Defaults to 0.1.
+        top_p (float, optional): top-p sampling. Defaults to 0.1.
+
+    Returns:
+        str: Model output
+    """    
     response = client.chat.completions.create(
         model=model_name,
         messages=[
@@ -71,13 +98,21 @@ def call_sambanova_model(client: SambaNova,
     return response.choices[0].message.content
 
 def process_reasoning_output(response: str) -> str:
+    """For reasoning model outputs extracting only the actual answer without the reasoning
+
+    Args:
+        response (str): reasoning model output
+
+    Returns:
+        str: reasoning model answer without the reasoning
+    """    
     if "</think>" in response:
         processed_response = response.split("</think>")[1].strip()
     else:
         processed_response = response
     return processed_response
 
-def format_output_schema(pydantic_json: Dict[str, any]):
+def format_output_schema(pydantic_json: Dict[str, any]) -> Dict[str, any]:
     """Format the output schema.
 
     Args:
