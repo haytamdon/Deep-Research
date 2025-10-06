@@ -23,3 +23,6 @@ app.log
 
 # Notebooks
 .ipynb
+
+# Report outputs
+test.md

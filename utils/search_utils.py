@@ -7,7 +7,7 @@ from linkup.types import LinkupSourcedAnswer
 from utils.pydantic_models import QuerySearchResults, QuerySubQueryResults
 
 
-def get_linkup_client(api_key: SecretStr):
+def get_linkup_client(api_key: SecretStr) -> LinkupClient:
     """Get the Linkup client.
 
     Args:
@@ -80,3 +80,13 @@ def format_outputs(queries: List[str],
     )
     return queries_results
 
+def format_single_output(query: str,
+                         search_result: LinkupSourcedAnswer,
+                         search_mode: Literal["standard", "deep"] = "deep") -> QuerySearchResults:
+    search_result_obj = QuerySearchResults(
+        query= query,
+        answer= search_result.answer,
+        sources= search_result.sources,
+        mode= search_mode
+    )
+    return search_result_obj
