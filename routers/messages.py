@@ -75,18 +75,19 @@ def search_pipeline(request: SearchRequest,
     if num_iterations<=1:
         return report
     else:
-        logger.info("Generating next step")
-        next_queries = next_query_creation(report_obj= report,
-                            num_next_questions= 5,
-                            model_name=model_name,
-                            client= cerebras_client)
-        next_questions = next_queries.next_questions
-        for qst in next_questions:
-            logger.info(f"Handling next question {qst}")
-            report = simplified_pipeline(query= qst,
-                                         original_question= query,
-                                         model_name= model_name,
-                                         cerebras_client= cerebras_client,
-                                         linkup_client= linkup_client,
-                                         report= report)
+        for i in range(num_iterations-1):
+            logger.info("Generating next step")
+            next_queries = next_query_creation(report_obj= report,
+                                num_next_questions= 5,
+                                model_name=model_name,
+                                client= cerebras_client)
+            next_questions = next_queries.next_questions
+            for qst in next_questions:
+                logger.info(f"Handling next question {qst}")
+                report = simplified_pipeline(query= qst,
+                                            original_question= query,
+                                            model_name= model_name,
+                                            cerebras_client= cerebras_client,
+                                            linkup_client= linkup_client,
+                                            report= report)
         return report
