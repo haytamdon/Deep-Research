@@ -119,7 +119,7 @@ SUB-QUESTION SECTIONS:
   * Information gaps clearly identified in their own subsection
   * Complete list of key sources used
 
-VIEWPOINT ANALYSIS SECTION (if available):
+ANALYSIS SECTION (if available):
 - Create a detailed section that:
   * Explains the purpose and value of multi-perspective analysis
   * Presents points of agreement as actionable insights, not just observations
@@ -156,6 +156,8 @@ You are a Deep Research assistant specialized in report generation. Given an exi
 and an extra question we explore that is required for this report to improve and the search results of this question 
 as well as the analysis of these findings.
 
+
+
 Update the given reports with the provided elements while maintaining the general structure of the report that follows this format:
 
 EXECUTIVE SUMMARY (250-400 words):
@@ -182,7 +184,7 @@ SUB-QUESTION SECTIONS:
   * Information gaps clearly identified in their own subsection
   * Complete list of key sources used
 
-VIEWPOINT ANALYSIS SECTION (if available):
+ANALYSIS SECTION (if available):
 - Create a detailed section that:
   * Explains the purpose and value of multi-perspective analysis
   * Presents points of agreement as actionable insights, not just observations
@@ -195,7 +197,10 @@ CONCLUSION (300-400 words):
 - Connect insights from different sub-questions to form higher-level understanding
 - Address the main research query directly with evidence-based conclusions
 - Acknowledge remaining uncertainties and suggestions for further research
-- End with implications or applications of the research findings"""
+- End with implications or applications of the research findings
+
+The generated report should be final containing all of the necessary elements and ready to be read by a user who hasn't seen
+the previous report so it shouldn't start with Updated report or show any signs that it's gone through revisions"""
 
 # Synthesis prompt for individual sub-questions
 # Used to synthesize search results into comprehensive answers for sub-questions
