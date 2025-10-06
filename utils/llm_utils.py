@@ -6,6 +6,7 @@ import os
 from pydantic import SecretStr
 from typing import Dict
 from sambanova import SambaNova
+from cerebras.cloud.sdk.types.chat.chat_completion import ChatCompletion
 
 
 def get_cerebras_client(api_key: SecretStr = SecretStr(os.environ.get("CEREBRAS_API_KEY"))):
@@ -43,7 +44,7 @@ def call_cerebras_model(client: Cerebras,
                         system_prompt: str, 
                         model_name: str, 
                         prompt: str, 
-                        response_schema: Dict[str, any] = None):
+                        response_schema: Dict[str, any] = None) -> ChatCompletion:
     """Call the Cerebras model.
 
     Args:
