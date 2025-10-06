@@ -83,6 +83,16 @@ def format_outputs(queries: List[str],
 def format_single_output(query: str,
                          search_result: LinkupSourcedAnswer,
                          search_mode: Literal["standard", "deep"] = "deep") -> QuerySearchResults:
+    """Format the output for single call
+
+    Args:
+        query (str): query to be searched
+        search_result (LinkupSourcedAnswer): Linkup search outputs
+        search_mode (Literal["standard", "deep"], optional): type of search executed by linkup. Defaults to "deep".
+
+    Returns:
+        QuerySearchResults: formatted search output
+    """    
     search_result_obj = QuerySearchResults(
         query= query,
         answer= search_result.answer,
